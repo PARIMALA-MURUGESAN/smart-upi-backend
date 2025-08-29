@@ -1,0 +1,11 @@
+// POST /api/upi
+// body: { label, vpa }
+const { encrypt } = require('../services/enc');
+
+async function addUpi(req, res) {
+  const { label, vpa } = req.body;
+  const user = await User.findById(req.userId);
+  user.upis.push({ label, vpa_encrypted: encrypt(vpa) });
+  await user.save();
+  res.status(201).json({ message: 'UPI added' });
+}
