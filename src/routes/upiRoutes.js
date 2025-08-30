@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getQr } = require('../controllers/upiController');
+const { getQr, handlePaymentLink } = require("../controllers/upiController");
 
-const auth = require('../middleware/auth');
+const auth = require('../middleware/auth.js');
 
 router.get('/qr', auth, getQr);
 router.get('/pay/:userId', handlePaymentLink);
