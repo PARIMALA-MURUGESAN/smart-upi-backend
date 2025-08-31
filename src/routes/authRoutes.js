@@ -52,7 +52,13 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-router.get("/profile", auth, (req, res) => {
-  res.json({ message: "Welcome to your profile", userId: req.user.id });
+router.get("/profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
 });
+
 module.exports = router;
