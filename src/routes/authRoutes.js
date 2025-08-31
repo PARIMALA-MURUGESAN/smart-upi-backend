@@ -51,5 +51,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
+router.get("/profile", auth, (req, res) => {
+  res.json({ message: "Welcome to your profile", userId: req.user.id });
+});
 module.exports = router;
