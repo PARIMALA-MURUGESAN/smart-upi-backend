@@ -16,8 +16,8 @@ const PreferenceSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
   name: String,
-  email: { type: String, unique: true },
-  passwordHash: String,
+  email: { type: String,required: true, unique: true },
+  password: { type: String, required: true },
   upis: [UpisSchema],
   preference: PreferenceSchema,
   history: [{
