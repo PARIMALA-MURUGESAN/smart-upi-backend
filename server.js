@@ -8,8 +8,8 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
 // Import routes
-const authRoutes = require("./routes/authRoutes");
-const upiRoutes = require('./routes/authRoutes'); // if you made one
+const authRoutes = require("./routes/authRoutes.js");
+const upiRoutes = require('./routes/authRoutes.js'); // if you made one
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/upi', upiRoutes);
+app.use('/api/upi', upiRoutes.js);
 
 // Optional: Rate limit to prevent brute-force
 app.use(rateLimit({
@@ -27,8 +27,8 @@ app.use(rateLimit({
 }));
 
 // Register routes
-app.use('/api/upi', upiRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/upi', upiRoutes.js);
+app.use('/api/auth', authRoutes.js);
 
 // Health check
 app.get('/', (req, res) => res.send('Smart UPI Backend running ✅'));
