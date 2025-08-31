@@ -8,8 +8,8 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
 // Import routes
-const authRoutes = require("./routes/authRoutes");
-const upiRoutes = require("./routes/upiRoutes");   // ✅ fixed path
+const authRoutes = require("./src/routes/authRoutes");
+const upiRoutes = require("./src/routes/upiRoutes");   // ✅ fixed path
 
 const app = express();
 
