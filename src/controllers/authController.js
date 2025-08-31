@@ -2,7 +2,6 @@
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 // Register
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 exports.register = async (req, res) => {
