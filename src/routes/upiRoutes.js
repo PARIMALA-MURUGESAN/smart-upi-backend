@@ -1,15 +1,34 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { getQr, handlePaymentLink } = require("../controllers/upiController");
+const auth = require("../middleware/auth");
+const User = require("../models/User");
 
-const auth = require('../middleware/auth.js');
+// Add new UPI
+router.post("/add", auth, async (req, res) => {
+  try {
+    const { upi } = req.body;
+    if (!upi) {
+      return res.status(400).json({ error: "UPI ID is required" });
+    }
 
-router.get('/qr', auth, getQr);
-router.get('/pay/:userId', handlePaymentLink);
-router.get('/history', auth, async (req, res) => {
-  const logs = await History.find({ userId: req.userId }).sort({ createdAt: -1 });
-  res.json(logs);
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Prevent duplicate UPI
+    if (user.upis.includes(upi)) {
+      return res.status(400).json({ error: "UPI already exists" });
+    }
+
+    user.upis.push(upi);
+    await user.save();
+
+    res.json({ message: "UPI added successfully", upis: user.upis });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
-
 
 module.exports = router;

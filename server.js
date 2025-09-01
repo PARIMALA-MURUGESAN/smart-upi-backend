@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 // Import routes
 const authRoutes = require("./src/routes/authRoutes");
 const upiRoutes = require("./src/routes/upiRoutes");   // ✅ fixed path
-
+const historyRoutes = require("./src/routes/historyRoutes");
 const app = express();
 
 // 🔒 Security middlewares
@@ -27,6 +27,8 @@ app.use(rateLimit({
 // Register routes
 app.use('/api/auth', authRoutes);   // ✅ Auth routes
 app.use('/api/upi', upiRoutes);     // ✅ UPI routes
+
+app.use("/history", historyRoutes);
 
 // Health check
 app.get('/', (req, res) => res.send('Smart UPI Backend running ✅'));

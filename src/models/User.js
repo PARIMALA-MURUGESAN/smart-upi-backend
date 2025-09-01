@@ -20,11 +20,15 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   upis: [UpisSchema],
   preference: PreferenceSchema,
-  history: [{
-    event: String, // 'SET_PREFERRED', 'SHARE_PAYMENT'
-    upiIndex: Number,
-    timestamp: Date
-  }]
+  history: [
+  {
+    amount: Number,
+    to: String,
+    from: String,
+    timestamp: { type: Date, default: Date.now }
+  }
+]
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);
