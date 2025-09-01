@@ -1,7 +1,37 @@
+
 const User = require('../models/User');
 const { generateUpiQr } = require('../services/qrService');
 const { decrypt } = require('../services/enc');
 const History = require('../models/History');
+
+
+export const addUpi = async (req, res) => {
+  try {
+    const { upiId } = req.body;
+
+    if (!upiId) {
+      return res.status(400).json({ error: "UPI ID is required" });
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Prevent duplicate UPI
+    if (user.upis.includes(upiId)) {
+      return res.status(400).json({ error: "UPI already exists" });
+    }
+
+    user.upis.push(upiId);
+    await user.save();
+
+    res.json({ message: "UPI added successfully", upis: user.upis });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 async function getQr(req, res) {
   try {

@@ -1,33 +1,74 @@
+// routes/upiRoutes.js
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
 const User = require("../models/User");
+const protect = require("../middleware/authMiddleware");
 
-// Add new UPI
-router.post("/add", auth, async (req, res) => {
+// ✅ Add UPI ID
+router.post("/add", protect, async (req, res) => {
   try {
-    const { upi } = req.body;
-    if (!upi) {
-      return res.status(400).json({ error: "UPI ID is required" });
+    const { upiId } = req.body;
+    if (!upiId) {
+      return res.status(400).json({ message: "UPI ID is required" });
     }
 
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Prevent duplicate UPI
-    if (user.upis.includes(upi)) {
-      return res.status(400).json({ error: "UPI already exists" });
-    }
-
-    user.upis.push(upi);
+    user.upis.push(upiId);
     await user.save();
 
-    res.json({ message: "UPI added successfully", upis: user.upis });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.json({
+      message: "UPI ID added successfully",
+      upis: user.upis,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// ✅ Add Transaction History
+router.post("/history/add", protect, async (req, res) => {
+  try {
+    const { amount, to } = req.body;
+    if (!amount || !to) {
+      return res.status(400).json({ message: "Amount and recipient are required" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const transaction = { amount, to, date: new Date() };
+    user.history.push(transaction);
+    await user.save();
+
+    res.json({
+      message: "Transaction added successfully",
+      history: user.history,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// ✅ Get Transaction History
+router.get("/history", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Transaction history fetched successfully",
+      history: user.history,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
