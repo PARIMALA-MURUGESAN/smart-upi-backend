@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 
 // Import routes
 const authRoutes = require("./src/routes/authRoutes");
-const upiRoutes = require("./routes/upiRoutes");   // ✅ fixed path
+const upiRoutes = require("./src/routes/upiRoutes");   // ✅ fixed path
 const historyRoutes = require("./src/routes/historyRoutes");
 const app = express();
 
