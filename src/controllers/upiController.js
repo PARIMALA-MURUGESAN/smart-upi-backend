@@ -7,7 +7,7 @@ const History = require('../models/History');
 
 export const addUpi = async (req, res) => {
   try {
-    const { upiId } = req.body;
+    const { upiId } = {"upiId":"parimala@upi"};
 
     if (!upiId) {
       return res.status(400).json({ error: "UPI ID is required" });

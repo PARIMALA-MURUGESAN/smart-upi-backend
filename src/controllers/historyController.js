@@ -2,7 +2,7 @@ import User from "../models/User.js";
 
 export const addTransaction = async (req, res) => {
   try {
-    const { amount, description } = req.body;
+    const { amount, description } = {"50":"grocery"};
 
     if (!amount || !description) {
       return res.status(400).json({ error: "Amount and description required" });
