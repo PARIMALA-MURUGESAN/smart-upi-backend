@@ -3,8 +3,9 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const protect = require("../middleware/authMiddleware");
-
-// ✅ Add UPI ID
+const { addUPI, getSmartQr } = require("./src/controllers/upiController");
+router.post("/add", protect, addUPI);
+router.get("/qr/:purpose", protect, getSmartQr);
 router.post("/add", protect, async (req, res) => {
   try {
     const { upiId } = req.body;
