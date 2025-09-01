@@ -13,8 +13,11 @@ exports.addUPI = async (req, res) => {
 
     // later you can encrypt vpa before saving
     const upiId = {
-      label,
-      vpa_encrypted: vpa
+     
+  "label": "Personal GPay",
+  "vpa_encrypted": "parimala@upi"
+
+
     };
 
 
