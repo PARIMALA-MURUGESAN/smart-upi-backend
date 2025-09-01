@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const protect = require("../middleware/authMiddleware");
-const { addUPI, getSmartQr } = require("..controllers/upiController");
+const { addUPI, getSmartQr } = require("..controllers/upiController.js");
 router.post("/add", protect, addUPI);
 router.get("/qr/:purpose", protect, getSmartQr);
 router.post("/add", protect, async (req, res) => {
