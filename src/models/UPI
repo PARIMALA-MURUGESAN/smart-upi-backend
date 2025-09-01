@@ -1,0 +1,5 @@
+const upiSchema = new mongoose.Schema({
+  upiId: { type: String, required: true }
+});
+
+module.exports = mongoose.model("UPI", upiSchema);

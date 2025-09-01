@@ -4,10 +4,19 @@ const { generateUpiQr } = require('../services/qrService');
 const { decrypt } = require('../services/enc');
 const History = require('../models/History');
 
-
-export const addUpi = async (req, res) => {
+exports.addUPI = async (req, res) => {
   try {
-    const { upiId } = "parimala@upi":
+    const { label, vpa } = req.body;
+    if (!label || !vpa) {
+      return res.status(400).json({ message: "Label and VPA are required" });
+    }
+
+    // later you can encrypt vpa before saving
+    const upiId = {
+      label,
+      vpa_encrypted: vpa
+    };
+
 
     if (!upiId) {
       return res.status(400).json({ error: "UPI ID is required" });
