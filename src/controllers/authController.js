@@ -19,7 +19,18 @@ exports.register = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+module.exports = function (req, res, next) {
+  const token = req.header("Authorization")?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Access denied. No token provided." });
 
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(400).json({ error: "Invalid token" });
+  }
+};
 // Login
 exports.login = async (req, res) => {
   try {
@@ -30,9 +41,7 @@ exports.login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-     expiresIn: "1h"
-    });
+    
     res.json({ message: "Login successful", user });
   } catch (err) {
     res.status(500).json({ error: err.message });
