@@ -3,6 +3,9 @@ const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 // Register
 const User = require("../models/User");
+const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+  expiresIn: "1h"
+});
 
 exports.register = async (req, res) => {
   try {
