@@ -3,9 +3,6 @@ const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 // Register
 const User = require("../models/User");
-const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-  expiresIn: "1h"
-});
 
 exports.register = async (req, res) => {
   try {
@@ -33,7 +30,9 @@ exports.login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
-
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+     expiresIn: "1h"
+    });
     res.json({ message: "Login successful", user });
   } catch (err) {
     res.status(500).json({ error: err.message });
