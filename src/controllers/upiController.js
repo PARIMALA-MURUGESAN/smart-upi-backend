@@ -44,7 +44,12 @@ exports.getSmartQr = async (req, res) => {
     const upi = user.upis.find(u => u.purpose === purpose);
     if (!upi) return res.status(400).json({ error: `No UPI set for purpose: ${purpose}` });
 
-    const vpa = decrypt(upi.vpa_encrypted);
+   let vpa;
+    try {
+      vpa = decrypt(upi.vpa_encrypted);  // ✅ works for new encrypted entries
+    } catch {
+      vpa = upi.vpa_encrypted;           // ✅ fallback for old unencrypted entries
+    }
     const qrImage = await generateUpiQr(vpa, user.email);
 
     res.json({ purpose, qrImage });
