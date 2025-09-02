@@ -53,3 +53,27 @@ exports.getSmartQr = async (req, res) => {
     res.status(500).json({ error: "Failed to generate QR" });
   }
 };
+
+exports.getQrByPurpose = async (req, res) => {
+  try {
+    const { purpose } = req.params;
+
+    const user = await User.findById(req.user.id); // from auth middleware
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // find the UPI mapped to this purpose
+    const matchedUpi = user.upis.find(u => u.purpose === purpose);
+
+    if (!matchedUpi) {
+      return res.status(404).json({ error: `No UPI found for ${purpose}` });
+    }
+
+    const vpa = decrypt(matchedUpi.vpa_encrypted);
+    const qrImage = await generateUpiQr(vpa, user.name);
+
+    res.json({ purpose, vpa, qrImage });
+  }catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to generate QR" });
+  }
+};
