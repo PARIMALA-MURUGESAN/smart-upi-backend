@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const { generateUpiQr } = require("../services/qrService");
-const { decrypt } = require("../services/enc");
+const {encrypt, decrypt } = require("../services/enc");
 
 // Add UPI with purpose
 exports.addUPI = async (req, res) => {
