@@ -1,17 +1,10 @@
 const QRCode = require('qrcode');
-const { decrypt } = require('./enc');
+const { decrypt } = require('./enc')
 
-async function generateUpiQr(user) {
-  const preferred = user.upis.id(user.preference.preferredUpiId);
-  if (!preferred) throw new Error("No preferred UPI set");
+exports.generateUpiQr = async (vpa, name) => {
+  const upiUrl = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(name || "User")}&cu=INR`;
+  return await QRCode.toDataURL(upiUrl);
+};
 
-  const vpa = decrypt(preferred.vpa_encrypted);
-  const upiLink = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(user.name)}&cu=INR`;
-
-  const qrDataUrl = await QRCode.toDataURL(upiLink);
-  return { upiLink, qrDataUrl };
-}
-
-module.exports = { generateUpiQr };
 
 
