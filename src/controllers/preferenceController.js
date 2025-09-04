@@ -17,7 +17,22 @@ exports.addPreference = async (req, res) => {
     res.status(500).json({ error: "Failed to add preference" });
   }
 };
+async function addPreference(req, res) {
+  try {
+    const { condition, value, targetPurpose } = req.body;
 
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.preferences.push({ condition, value, targetPurpose });
+    await user.save();
+
+    res.json({ message: "Preference added", preferences: user.preferences });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to add preference" });
+  }
+}
 // Utility to decide account dynamically
 exports.decideAccount = (user, payment) => {
   for (let rule of user.preferences) {
