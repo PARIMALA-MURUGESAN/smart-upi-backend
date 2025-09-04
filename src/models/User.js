@@ -5,20 +5,24 @@ const UpiSchema = new mongoose.Schema({
   vpa_encrypted: { type: String, required: true }, // encrypted VPA like user@upi
   purpose: {                                       // NEW FIELD
     type: String,
-    enum: ["salary", "business", "personal"],
     default: "personal"
   },
   meta: {
     addedAt: { type: Date, default: Date.now }
   }
 });
+const PreferenceSchema = new mongoose.Schema({
+  condition: { type: String, required: true },   // "amount_gt", "from", "default"
+  value: { type: String },                       // "500000" OR "Company XYZ"
+  targetPurpose: { type: String, required: true } // "salary" | "business" | "personal"
+});
 
 const UserSchema = new mongoose.Schema({
-  name:String,
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  upis: [UpiSchema],
-  history: [{ type: mongoose.Schema.Types.ObjectId, ref: "History" }]
+  email: String,
+  password: String,
+  upis: [UpisSchema],
+  preferences: [PreferenceSchema]   // user-defined rules
 }, { timestamps: true });
+
 
 module.exports = mongoose.model("User", UserSchema);

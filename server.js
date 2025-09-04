@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const preferenceRoutes = require("./routes/preferenceRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+
 
 // Import routes
 const authRoutes = require("./src/routes/authRoutes");
@@ -17,8 +20,9 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/preferences", preferenceRoutes);
 // Optional: Rate limit to prevent brute-force
+app.use("/api/payment", paymentRoutes);
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100
