@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const UpiSchema = new mongoose.Schema({
+const UpisSchema = new mongoose.Schema({
   label: { type: String, required: true },         // "Personal GPay", "Work Paytm"
   vpa_encrypted: { type: String, required: true }, // encrypted VPA like user@upi
   purpose: {                                       // NEW FIELD
