@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
-const preferenceRoutes = require("./routes/preferenceRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
+const preferenceRoutes = require("./src/routes/preferenceRoutes");
+const paymentRoutes = require("./src/routes/paymentRoutes");
 
 
 // Import routes
