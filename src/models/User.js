@@ -16,7 +16,14 @@ const PreferenceSchema = new mongoose.Schema({
   value: { type: String },                       // "500000" OR "Company XYZ"
   targetPurpose: { type: String, required: true } // "salary" | "business" | "personal"
 });
-
+const TransactionSchema = new mongoose.Schema({
+  type: String,      // "credit" | "debit"
+  amount: Number,
+  sender: String,
+  to: String,        // VPA
+  purpose: String,   // salary / business / personal
+  at: { type: Date, default: Date.now }
+});
 const UserSchema = new mongoose.Schema({
   email: String,
   password: String,
