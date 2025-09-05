@@ -17,7 +17,9 @@ exports.receivePayment = async (req, res) => {
     if (!matchedUpi) {
       return res.status(400).json({ error: `No UPI set for purpose: ${targetPurpose}` });
     }
-
+    if (!user.history) {
+  user.history = [];   // 👈 ensure history exists
+}
     // Save transaction history (optional)
     user.history.push({
       type: "credit",

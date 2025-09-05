@@ -36,7 +36,8 @@ const UserSchema = new mongoose.Schema({
   email: String,
   password: String,
   upis: [UpisSchema],
-  preferences: [PreferenceSchema]   // user-defined rules
+  preferences: [PreferenceSchema],
+  history: { type: [HistorySchema], default: [] }  // user-defined rules
 }, { timestamps: true });
 
 
