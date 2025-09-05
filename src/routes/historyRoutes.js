@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const { getHistory } = require("../controllers/historyController");
 // Add a transaction
+router.get("/", authMiddleware, getHistory);
 router.post("/add", authMiddleware, async (req, res) => {
   try {
     const { amount, to, from } = req.body;
@@ -27,7 +28,7 @@ router.post("/add", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-router.get("/", authMiddleware, getHistory);
+
 // Get transaction history
 router.get("/", authMiddleware, async (req, res) => {
   try {
