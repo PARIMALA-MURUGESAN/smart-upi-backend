@@ -4,8 +4,6 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const { getHistory } = require("../controllers/historyController");
-app.use("/api/auth", authRoutes);
-app.use("/api/history", historyRoutes); 
 // Add a transaction
 router.post("/add", authMiddleware, async (req, res) => {
   try {
