@@ -29,7 +29,7 @@ router.post("/add", authMiddleware, async (req, res) => {
 });
 router.get("/", authMiddleware, getHistory);
 // Get transaction history
-router.get("/", auth, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
