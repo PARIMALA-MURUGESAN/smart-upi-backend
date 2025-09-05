@@ -35,8 +35,9 @@ exports.receivePayment = async (req, res) => {
       vpa: matchedUpi.vpa_encrypted,
       purpose: targetPurpose
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to process payment" });
-  }
+  }  catch (err) {
+  console.error("❌ Payment processing error:", err); // better logging
+  res.status(500).json({ error: "Failed to process payment", details: err.message });
+}
+
 };
