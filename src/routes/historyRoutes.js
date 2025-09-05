@@ -5,7 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const { getHistory } = require("../controllers/historyController");
 // Add a transaction
-router.post("/add", auth, async (req, res) => {
+router.post("/add", authMiddleware, async (req, res) => {
   try {
     const { amount, to, from } = req.body;
     if (!amount || !to || !from) {
