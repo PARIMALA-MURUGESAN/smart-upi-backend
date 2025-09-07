@@ -32,7 +32,7 @@ app.use(rateLimit({
 app.use('/api/auth', authRoutes);   // ✅ Auth routes
 app.use('/api/upi', upiRoutes);     // ✅ UPI routes
 
-app.use("/history", historyRoutes);
+app.use("/api/history", historyRoutes);
 
 // Health check
 app.get('/', (req, res) => res.send('Smart UPI Backend running ✅'));

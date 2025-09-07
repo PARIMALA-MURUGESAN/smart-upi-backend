@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     user = new User({ email, password: hashedPassword });
     await user.save();
 
-    res.json({ message: "User registered successfully", user });
+    res.status(201).json({ message: "User registered successfully", user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({ message: "Login successful", token });
+    res.status(201).json({ message: "Login successful", token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
+    res.status(201).json(user);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
