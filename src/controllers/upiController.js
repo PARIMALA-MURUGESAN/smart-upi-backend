@@ -33,7 +33,14 @@ exports.addUPI = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
+exports.getUserUPIs = async (req, res) => {
+  try {
+    const upis = await UPI.find({ user: req.user.id });
+    res.json(upis);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching UPIs" });
+  }
+};
 // Get Smart QR by purpose
 exports.getSmartQr = async (req, res) => {
   try {

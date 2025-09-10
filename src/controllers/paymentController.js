@@ -1,45 +1,44 @@
-const User = require("../models/User");
-const { decideAccount } = require("./preferenceController");
+const Transaction = require("../models/Transaction");
+const Preference = require("../models/Preference");
+const UPI = require("../models/UPI");
 
-// Simulate receiving a payment
-exports.receivePayment = async (req, res) => {
+exports.sendMoney = async (req, res) => {
   try {
-    const { amount, sender } = req.body;  // payment info from request
+    const { receiver, amount, note } = req.body;
 
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    // get user preferences
+    const preference = await Preference.findOne({ user: req.user.id }).populate("conditions.preferredUPI");
 
-    // Decide which account (purpose) should get this money
-    const targetPurpose = decideAccount(user, { amount, sender });
-
-    // Find UPI that matches the target purpose
-    const matchedUpi = user.upis.find(u => u.purpose === targetPurpose);
-    if (!matchedUpi) {
-      return res.status(400).json({ error: `No UPI set for purpose: ${targetPurpose}` });
+    let selectedUPI;
+    if (preference) {
+      for (let condition of preference.conditions) {
+        if (amount >= condition.minAmount && amount <= condition.maxAmount) {
+          selectedUPI = condition.preferredUPI;
+          break;
+        }
+      }
     }
-    if (!user.history) {
-  user.history = [];   // 👈 ensure history exists
-}
-    // Save transaction history (optional)
-    user.history.push({
-      type: "credit",
+
+    if (!selectedUPI) {
+      selectedUPI = await UPI.findOne({ user: req.user.id, isDefault: true });
+    }
+
+    if (!selectedUPI) {
+      return res.status(400).json({ message: "No UPI available to send money" });
+    }
+
+    // simulate transaction
+    const transaction = await Transaction.create({
+      sender: req.user.id,
+      receiver,
       amount,
-      sender,
-      to: matchedUpi.vpa_encrypted,
-      purpose: targetPurpose,
-      at: new Date()
+      status: "success", // mock
+      upiUsed: selectedUPI._id,
+      note
     });
-    await user.save();
 
-    res.json({
-      message: "Payment routed successfully",
-      creditedTo: matchedUpi.label,
-      vpa: matchedUpi.vpa_encrypted,
-      purpose: targetPurpose
-    });
-  }  catch (err) {
-  console.error("❌ Payment processing error:", err); // better logging
-  res.status(500).json({ error: "Failed to process payment", details: err.message });
-}
-
+    res.status(201).json(transaction);
+  } catch (err) {
+    res.status(500).json({ message: "Error sending money", error: err.message });
+  }
 };

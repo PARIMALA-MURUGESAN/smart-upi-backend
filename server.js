@@ -1,47 +1,46 @@
-// server.js
-require('dotenv').config();   // Load .env
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
 
-const express = require('express');
-const mongoose = require('mongoose');
-const helmet = require('helmet');
-const cors = require('cors');
-const rateLimit = require('express-rate-limit');
-const preferenceRoutes = require("./src/routes/preferenceRoutes");
-const paymentRoutes = require("./src/routes/paymentRoutes");
+dotenv.config();
 
-
-// Import routes
-const authRoutes = require("./src/routes/authRoutes");
-const upiRoutes = require("./src/routes/upiRoutes");   // ✅ fixed path
-const historyRoutes = require("./src/routes/historyRoutes");
 const app = express();
 
-// 🔒 Security middlewares
-app.use(helmet());
-app.use(cors());
+// Middleware
 app.use(express.json());
+app.use(cors());
+
+// Import Routes
+const authRoutes = require("./src/routes/authRoutes");
+const upiRoutes = require("./src/routes/upiRoutes");
+const preferenceRoutes = require("./src/routes/preferenceRoutes");
+const paymentRoutes = require("./src/routes/paymentRoutes");
+const historyRoutes = require("./src/routes/historyRoutes");
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/upi", upiRoutes);
 app.use("/api/preferences", preferenceRoutes);
-// Optional: Rate limit to prevent brute-force
-app.use("/api/payment", paymentRoutes);
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-}));
-
-// Register routes
-app.use('/api/auth', authRoutes);   // ✅ Auth routes
-app.use('/api/upi', upiRoutes);     // ✅ UPI routes
-
+app.use("/api/payments", paymentRoutes);
 app.use("/api/history", historyRoutes);
 
-// Health check
-app.get('/', (req, res) => res.send('Smart UPI Backend running ✅'));
-
-// Connect to MongoDB + start server
-const PORT = process.env.PORT || 5000;
-mongoose.connect(process.env.DB_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(PORT,"0.0.0.0" ,() => console.log(`Server running on port ${PORT}`));
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
-  .catch(err => console.error(err));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err.message));
+
+// Root endpoint
+app.get("/", (req, res) => {
+  res.send("🚀 Smart UPI Backend is running...");
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});

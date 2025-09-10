@@ -68,3 +68,31 @@ module.exports = {
   addPreference,
   decideAccount
 };
+const Preference = require("../models/Preference");
+
+exports.setPreferences = async (req, res) => {
+  try {
+    const { conditions } = req.body;
+    let preference = await Preference.findOne({ user: req.user.id });
+
+    if (!preference) {
+      preference = await Preference.create({ user: req.user.id, conditions });
+    } else {
+      preference.conditions = conditions;
+      await preference.save();
+    }
+
+    res.json(preference);
+  } catch (err) {
+    res.status(500).json({ message: "Error saving preferences" });
+  }
+};
+
+exports.getPreferences = async (req, res) => {
+  try {
+    const preference = await Preference.findOne({ user: req.user.id }).populate("conditions.preferredUPI");
+    res.json(preference);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching preferences" });
+  }
+};
