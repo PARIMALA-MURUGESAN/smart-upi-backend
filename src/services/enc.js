@@ -1,6 +1,6 @@
 // src/services/enc.js
 const crypto = require('crypto');
-const KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // 32 bytes
+const KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'utf8'); // 32 bytes
 
 function encrypt(text) {
   const iv = crypto.randomBytes(12);
